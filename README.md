@@ -1,38 +1,124 @@
-# DevFest Hackathon 2026 提出用リポジトリ
+# Memory Map — 自分だけのGoogle Mapを作ろう
 
-  DevFest Hackathon 2026 のチームの **最終提出用** リポジトリです。提出期限までに、作品のコードと資料をこのリポジトリに置いてください。
+**DevFest Hackathon 2026（Team 109：`df-2026-t109`）提出リポジトリ**
 
-  このリポジトリは **公開（public）** です。開催中も、運営・審査員・ほかの参加者が見られます。
+訪問場所・写真・レビュー・思い出を地図上に保存し、視覚的に振り返ることができるモバイルアプリケーション（iOS / Android 対応・Flutter製）です。写真フォルダや過去の記録を1つずつ検索しなくても、地図を見れば訪れた場所や当時の思い出がよみがえる体験を提供します。
 
-  ## はじめに
+---
 
-  1. GitHub から届いた招待を受け入れてください（招待の期限は 7 日です）
-  2. このリポジトリを clone して、提出物を置いてください
+## 主な機能（MVP機能）
 
-  招待の期限が切れたときや、メンバーが変わったときは、運営に連絡してください。
+1. **Google Maps による訪問地点・移動ルートの表示**
+   - 訪問した場所（ピン）や旅行中の移動軌跡を地図上に表示し、紐づく思い出を確認できます。
+2. **写真・思い出・レビューの保存**
+   - 場所や旅行ごとに写真・タイトル・レビュー・訪問日時を記録・再閲覧できます。
+3. **都道府県の形に沿った写真プレビュー**
+   - 訪問・記録した地域の境界ポリゴンに沿って写真を切り抜いて地図上にオーバーレイ表示し、訪れた地域が増える達成感を視覚的に楽しめます。
+4. **ユーザー認証（Google ログイン / ゲストモード）**
+   - Firebase Authentication（Google Sign-In）によるアカウント管理と、すぐに試せるゲストモードに対応しています。
+5. **グループ機能**
+   - 複数人でチーム（グループ）を作成・招待し、グループ単位で思い出や訪問場所を共有できます。
+6. **シェア機能**
+   - 思い出や訪問記録の共有リンク発行・公開範囲の管理が可能です。
 
-  ## 開発用のリポジトリは別に作ることをおすすめします
+---
 
-  このリポジトリでは **GitHub Actions と GitHub Pages が使えません**。CI やデプロイ、Pages での公開をしたいときは、チームで開発用のリポジトリを別に作ってください。
+## 実行方法①：Android 端末へ APK を直接インストールする場合（GitHub Releases）
 
-  - 開発用のリポジトリは、チームのメンバーのアカウントや、チームで作った Organization に作ってください
-  - 開発はそちらで進めて、提出期限までに最終版のコードと資料をこのリポジトリに push してください
-  - 審査はこのリポジトリの内容で行います。開発用のリポジトリにしかないものは、審査の対象になりません
-  - デプロイした作品の URL があれば、この README に書いてください
+Android 実機またはエミュレータをご利用の場合は、[GitHub Releases](https://github.com/Devfest-Hackathon-2026/df-2026-t109/releases) に添付されている実行可能ファイル（`.apk`）をダウンロードして直接インストール・実行できます。
 
-  ## 秘密情報をコミットしない
+1. [GitHub Releases ページ](https://github.com/Devfest-Hackathon-2026/df-2026-t109/releases) から最新リリースの APK ファイル（`app-release.apk`）をダウンロードします。
+2. Android 端末（または Android Emulator）に APK を転送・インストールして起動します。
+   - ADB 経由でインストールする場合：
+     ```bash
+     adb install app-release.apk
+     ```
 
-  API キー・パスワード・サービスアカウントの鍵などは、**絶対にコミットしないでください**。公開リポジトリなので、push
-  した時点で誰でも見られます。開発用のリポジトリから持ってくるときも、履歴ごと push すると、過去のコミットに含まれる秘密情報も公開されます。
+---
 
-  - 秘密情報は `.env` や `.dev.vars` などに書き、コミットしない（`.gitignore` に入れてあります）
-  - 誤って push したら、すぐにキー（鍵）を無効にして作り直し、運営に連絡してください。履歴から消すだけでは不十分です
-  - GitHub の push protection が、よく知られた形式のキーの push を止めることがあります。止められたら、そのキーをコミットから外してください
+## 実行方法②：ソースコードからビルド・実行する方法（iOS / Android 共通）
 
-  ## 提出
+> **※ iOS 向けアプリについて（提出ルール③対応）**  
+> iOS アプリは Apple のコード署名制限により署名なし IPA ファイルの他環境へのインストールが困難なため、iOS 環境（シミュレータ／実機）での動作確認は以下の手順に沿ってソースコードからビルド・実行してください。
 
-  提出の方法と締切は、運営からの案内に従ってください。提出期限を過ぎると、このリポジトリは読み取り専用になり、push できなくなります。
+### 1. 前提環境
 
-  ## ライセンス
+- **Flutter SDK**: `3.x`（Dart SDK `^3.12.2`）
+- **Android ビルド時**:
+  - Android Studio / Android SDK
+  - Java 17（JDK 17）
+- **iOS ビルド時（macOS のみ）**:
+  - Xcode（最新安定版推奨）
+  - CocoaPods（`sudo gem install cocoapods` または `brew install cocoapods`）
 
-  [MIT License](LICENSE) です。ほかのライセンスにしたいときは、LICENSE を書き換えてください。
+### 2. リポジトリのクローンとパッケージ取得
+
+```bash
+git clone https://github.com/Devfest-Hackathon-2026/df-2026-t109.git
+cd df-2026-t109
+flutter pub get
+```
+
+### 3. Google Maps API キーの設定
+
+セキュリティ保護のため、Google Maps API キーはリポジトリに含めていません。ビルド前に以下の設定ファイルを作成し、Maps SDK for Android / Maps SDK for iOS（および Places API）が有効化された API キーを設定してください。
+
+#### Android 向け設定（`android/local.properties`）
+`android/local.properties` ファイルを開き（存在しない場合は新規作成し）、以下の行を追加します：
+
+```properties
+GOOGLE_MAPS_API_KEY=あなたのGoogleMapsAPIキー
+```
+
+#### iOS 向け設定（`ios/Flutter/Secrets.xcconfig`）
+`ios/Flutter/Secrets.xcconfig` ファイルを新規作成し、以下の行を記述します：
+
+```xcconfig
+GOOGLE_MAPS_API_KEY=あなたのGoogleMapsAPIキー
+```
+
+### 4. アプリのビルド・起動
+
+#### iOS シミュレータ / 実機で実行する場合（macOS）
+
+```bash
+cd ios
+pod install
+cd ..
+flutter run -d ios
+```
+（※ 特定の iOS シミュレータを指定する場合は `flutter devices` でデバイス ID を確認し、`flutter run -d <デバイスID>` を実行してください）
+
+#### Android エミュレータ / 実機で実行する場合
+
+```bash
+flutter run -d android
+```
+
+#### Android リリース APK をビルドする場合
+
+```bash
+flutter build apk --release
+```
+ビルド完了後、`build/app/outputs/flutter-apk/app-release.apk` に APK ファイルが生成されます。
+
+---
+
+## 技術スタック
+
+- **フレームワーク / 言語**: Flutter / Dart
+- **対象プラットフォーム**: iOS / Android
+- **地図・位置情報**:
+  - `google_maps_flutter`（Google Maps SDK for Android / iOS）
+  - Google Places API（場所検索・オートコンプリート）
+  - `geolocator`（現在地取得・移動ルートトラッキング）
+- **バックエンド / BaaS (Firebase)**:
+  - Firebase Authentication / Google Sign-In（ユーザー認証）
+  - Cloud Firestore（旅行記録・ピン・グループ・共有データの保存）
+  - Cloud Storage for Firebase（写真データの保存）
+
+---
+
+## ライセンス
+
+[MIT License](LICENSE)
