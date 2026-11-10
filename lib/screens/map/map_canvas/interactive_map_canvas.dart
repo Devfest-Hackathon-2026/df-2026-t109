@@ -66,6 +66,9 @@ class _InteractiveMapCanvasState extends State<InteractiveMapCanvas> {
   /// 市区町村の形 → ピン＆有名スポット表示に切り替わるズーム閾値
   static const double _detailPinZoomThreshold = 11.2;
 
+  /// Google ロゴ等のための地図下余白。塗りつぶし・ピン投影でも同じ値を使う。
+  static const EdgeInsets _mapPadding = EdgeInsets.only(bottom: 30);
+
   /// 低・中倍率用：道路・POI・文字ラベルを消して県の輪郭と灰・白トーンだけにするスタイル
   static const String _outlineOnlyMapStyleJson = '''
 [
@@ -380,6 +383,7 @@ class _InteractiveMapCanvasState extends State<InteractiveMapCanvas> {
         pin.latLng,
         _currentCameraPosition,
         mapSize,
+        padding: _mapPadding,
       );
       if (screenOffset.dx < -40 ||
           screenOffset.dx > mapSize.width + 40 ||
@@ -456,7 +460,7 @@ class _InteractiveMapCanvasState extends State<InteractiveMapCanvas> {
                   compassEnabled: false,
                   rotateGesturesEnabled: false,
                   tiltGesturesEnabled: false,
-                  padding: const EdgeInsets.only(bottom: 30),
+                  padding: _mapPadding,
                   gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
                     Factory<OneSequenceGestureRecognizer>(
                       EagerGestureRecognizer.new,
@@ -486,6 +490,7 @@ class _InteractiveMapCanvasState extends State<InteractiveMapCanvas> {
                     pins: widget.pins,
                     cameraPosition: _currentCameraPosition,
                     mapSize: mapSize,
+                    mapPadding: _mapPadding,
                     isCityMode: _isCityPhotoMode,
                     onTapRegionPins: widget.onTapRegionPins,
                   ),
@@ -507,6 +512,7 @@ class _InteractiveMapCanvasState extends State<InteractiveMapCanvas> {
                           activePin.latLng,
                           _currentCameraPosition,
                           mapSize,
+                          padding: _mapPadding,
                         );
                     const double cardWidth = 250.0;
                     const double cardHeight = 195.0;

@@ -17,11 +17,15 @@ class RegionPhotoOverlay extends StatelessWidget {
     required this.mapSize,
     required this.isCityMode,
     required this.onTapRegionPins,
+    this.mapPadding = EdgeInsets.zero,
   });
 
   final List<MemoryPin> pins;
   final CameraPosition cameraPosition;
   final Size mapSize;
+
+  /// GoogleMap と同じ padding。カメラ中心と塗りつぶし位置を一致させるために使う。
+  final EdgeInsets mapPadding;
 
   /// false: 1倍〜低倍率（県の形に沿って表示）
   /// true: 中倍率（市の形に沿って表示）
@@ -31,11 +35,16 @@ class RegionPhotoOverlay extends StatelessWidget {
   final ValueChanged<List<MemoryPin>> onTapRegionPins;
 
   /// 緯度経度を現在の GoogleMap カメラ座標から画面上の Offset に変換する（Web Mercator投影）
+  ///
+  /// [padding] は GoogleMap の `padding` と同じ値を渡すこと。
+  /// Google Maps は余白を除いた領域の中央にカメラターゲットを置くため、
+  /// 塗りつぶし・ピン座標も同じ基準で計算しないと地図とずれる。
   static Offset latLngToScreenOffset(
     LatLng point,
     CameraPosition camera,
-    Size screenSize,
-  ) {
+    Size screenSize, {
+    EdgeInsets padding = EdgeInsets.zero,
+  }) {
     if (screenSize.width <= 0 || screenSize.height <= 0) {
       return Offset.zero;
     }
@@ -44,9 +53,17 @@ class RegionPhotoOverlay extends StatelessWidget {
     final Offset centerWorld = _projectToWorld(camera.target, worldSize);
     final Offset pointWorld = _projectToWorld(point, worldSize);
 
+    final double usableWidth = (screenSize.width - padding.left - padding.right)
+        .clamp(1.0, double.infinity);
+    final double usableHeight =
+        (screenSize.height - padding.top - padding.bottom).clamp(
+          1.0,
+          double.infinity,
+        );
+
     return Offset(
-      screenSize.width / 2.0 + (pointWorld.dx - centerWorld.dx),
-      screenSize.height / 2.0 + (pointWorld.dy - centerWorld.dy),
+      padding.left + usableWidth / 2.0 + (pointWorld.dx - centerWorld.dx),
+      padding.top + usableHeight / 2.0 + (pointWorld.dy - centerWorld.dy),
     );
   }
 
@@ -174,7 +191,14 @@ class RegionPhotoOverlay extends StatelessWidget {
     final screenPolygons = latLngPolygons
         .map(
           (polygon) => polygon
-              .map((ll) => latLngToScreenOffset(ll, cameraPosition, mapSize))
+              .map(
+                (ll) => latLngToScreenOffset(
+                  ll,
+                  cameraPosition,
+                  mapSize,
+                  padding: mapPadding,
+                ),
+              )
               .toList(growable: false),
         )
         .where((polygon) => polygon.length >= 3)
