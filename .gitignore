@@ -42,6 +42,7 @@ ios/Flutter/Flutter.podspec
 ios/Flutter/Generated.xcconfig
 ios/Flutter/app.flx
 ios/Flutter/flutter_assets/
+ios/Flutter/Secrets.xcconfig
 macos/Pods/
 macos/.symlinks/
 macos/Flutter/ephemeral/
